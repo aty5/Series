@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <link rel="icon" href="{{  asset('img/icon.png') }}">
 
+        {% block extrastyles %} {% endblock %}
+
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
