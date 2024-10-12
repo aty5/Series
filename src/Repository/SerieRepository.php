@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Serie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,16 +38,22 @@ class SerieRepository extends ServiceEntityRepository
 */
 
         // QueryBuilder
-        $queryBuilder = $this->createQueryBuilder('s');
+        $queryBuilder = $this->createQueryBuilder('s')
+            ->addSelect('seas');
+
+        $queryBuilder->leftJoin('s.seasons', 'seas');
+
         $queryBuilder->andWhere('s.popularity > 100');
         $queryBuilder->andWhere('s.vote > 8');
         $queryBuilder->addOrderBy('s.popularity', 'DESC');
         $query = $queryBuilder->getQuery();
 
         $query->setMaxResults(50);
-        $results = $query->getResult(); //getOneOrNull si unique serie a recuperer
 
-        return $results;
+        $paginator = new Paginator($query);
+
+
+        return $paginator;
     }
     public function add(Serie $entity, bool $flush = false): void
     {
